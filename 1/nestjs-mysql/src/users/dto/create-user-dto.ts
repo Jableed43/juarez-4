@@ -1,4 +1,8 @@
+import { MaxLength } from 'class-validator';
+
 export class CreateUserDto {
-    username: string
-    password: string
+  @MaxLength(13)
+  username: string;
+  @MaxLength(13)
+  password: string;
 }
