@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSchoolsDto } from './dto/create-schools.dto';
 import { UpdateSchoolsDto } from './dto/update-schools.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,24 +11,47 @@ export class SchoolsService {
     @InjectRepository(Schools) private schoolsRepository: Repository<Schools>,
   ) {}
 
-  create(createSchoolsDto: CreateSchoolsDto) {
+  async create(createSchoolsDto: CreateSchoolsDto) {
+    const school = await this.schoolsRepository.findOne({
+      where: { schoolname: createSchoolsDto.schoolname },
+    })
+    if(school){
+      return new HttpException('School already exists', HttpStatus.CONFLICT);
+    }
+    console.log(createSchoolsDto)
     const newSchool = this.schoolsRepository.create(createSchoolsDto);
     return this.schoolsRepository.save(newSchool)
   }
 
-  findAll() {
-    return `This action returns all schools`;
+  findAll(): Promise<Schools[]> {
+    return this.schoolsRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} school`;
+  async findOne(id: number): Promise<HttpException | Schools> {
+    const school = await this.schoolsRepository.findOne({
+      where: { id: id },
+    })
+    if(!school){
+     return new HttpException("School does not exist", HttpStatus.NOT_FOUND)
+    }
+    return school
   }
 
-  update(id: number, updateSchoolsDto: UpdateSchoolsDto) {
-    return `This action updates a #${id} school`;
+  async update(id: number, updateSchoolDto: Partial<UpdateSchoolsDto>): Promise<HttpException | Schools> {
+    const school = await this.schoolsRepository.findOne({where: {id: id}})
+    if(!school){
+      return new HttpException("School does not exist", HttpStatus.NOT_FOUND)
+     }
+     this.schoolsRepository.update(id, updateSchoolDto)
+     return {...school, ...updateSchoolDto}
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} school`;
+  async remove(id: number): Promise<HttpException | Schools> {
+    const school = await this.schoolsRepository.findOne({where: {id: id}})
+    if(!school){
+      return new HttpException('School does not exist', HttpStatus.NOT_FOUND)
+    }
+    this.schoolsRepository.delete(id)
+    return school
   }
 }

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user-dto';
+import { UpdateUserDto } from './dto/update-user-dto';
 
 @Injectable()
 export class UsersService {
@@ -10,7 +11,7 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async createUser(user: CreateUserDto) {
+  async createUser(user: CreateUserDto): Promise<HttpException | User> {
     const userFound = await this.userRepository.findOne({
       where: { username: user.username },
     });
@@ -21,7 +22,40 @@ export class UsersService {
     return this.userRepository.save(newUser)
   }
 
-  getUsers(){
+  getUsers(): Promise<User[]>{
     return this.userRepository.find()
   }
+
+  async updateUser(id: number, userData: UpdateUserDto): Promise<HttpException | User>{
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+    })
+    if (!user) {
+      return new HttpException('User already exists', HttpStatus.CONFLICT);
+    }
+    this.userRepository.update(id, userData)
+    return {...user,...userData}
+  }
+
+  async getUser(id: number): Promise<HttpException | User>{
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+    })
+    if(!user){
+      return new HttpException('User does not exist', HttpStatus.NOT_FOUND)
+    }
+    return user
+  }
+
+  async deleteUser(id: number): Promise<HttpException | User>{
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+    })
+    if(!user){
+      return new HttpException('User does not exist', HttpStatus.NOT_FOUND)
+    }
+    this.userRepository.delete({id: id})
+    return user
+  }
+
 }

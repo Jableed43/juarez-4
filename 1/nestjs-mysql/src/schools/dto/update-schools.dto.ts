@@ -1,4 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateSchoolsDto } from './create-schools.dto';
+import { MaxLength } from 'class-validator';
 
-export class UpdateSchoolsDto extends PartialType(CreateSchoolsDto) {}
+export class UpdateSchoolsDto {
+    @MaxLength(40)
+    schoolname: string;
+  
+    @MaxLength(40)
+    address: string;
+}
