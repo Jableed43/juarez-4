@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SchoolsModule } from './schools/schools.module';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { SchoolsModule } from './schools/schools.module';
       password: '',
       port: 3300,
       database: 'world_x',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      entities: [join(__dirname, '/**/*.entity{.ts,.js}')],
       synchronize: true,
     }),
     UsersModule,
