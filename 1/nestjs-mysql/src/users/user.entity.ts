@@ -5,7 +5,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true, length: 12 })
+  @Column({ unique: true, length: 13 })
   username: string;
 
   @Column({ length: 13 })
@@ -13,5 +13,4 @@ export class User {
 
   @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
-
 }

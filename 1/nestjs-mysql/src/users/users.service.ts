@@ -18,44 +18,46 @@ export class UsersService {
     if (userFound) {
       return new HttpException('User already exists', HttpStatus.CONFLICT);
     }
-    const newUser = this.userRepository.create(user)
-    return this.userRepository.save(newUser)
+    const newUser = this.userRepository.create(user);
+    return this.userRepository.save(newUser);
   }
 
-  getUsers(): Promise<User[]>{
-    return this.userRepository.find()
+  getUsers(): Promise<User[]> {
+    return this.userRepository.find();
   }
 
-  async updateUser(id: number, userData: UpdateUserDto): Promise<HttpException | User>{
+  async updateUser(
+    id: number,
+    userData: UpdateUserDto,
+  ): Promise<HttpException | User> {
     const user = await this.userRepository.findOne({
       where: { id: id },
-    })
+    });
     if (!user) {
       return new HttpException('User already exists', HttpStatus.CONFLICT);
     }
-    this.userRepository.update(id, userData)
-    return {...user,...userData}
+    this.userRepository.update(id, userData);
+    return { ...user, ...userData };
   }
 
-  async getUser(id: number): Promise<HttpException | User>{
+  async getUser(id: number): Promise<HttpException | User> {
     const user = await this.userRepository.findOne({
       where: { id: id },
-    })
-    if(!user){
-      return new HttpException('User does not exist', HttpStatus.NOT_FOUND)
+    });
+    if (!user) {
+      return new HttpException('User does not exist', HttpStatus.NOT_FOUND);
     }
-    return user
+    return user;
   }
 
-  async deleteUser(id: number): Promise<HttpException | User>{
+  async deleteUser(id: number): Promise<HttpException | User> {
     const user = await this.userRepository.findOne({
       where: { id: id },
-    })
-    if(!user){
-      return new HttpException('User does not exist', HttpStatus.NOT_FOUND)
+    });
+    if (!user) {
+      return new HttpException('User does not exist', HttpStatus.NOT_FOUND);
     }
-    this.userRepository.delete({id: id})
-    return user
+    this.userRepository.delete({ id: id });
+    return user;
   }
-
 }
