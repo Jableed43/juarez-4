@@ -13,6 +13,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { User } from './user.entity';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { IUser } from './user.interface';
 
 @Controller('users')
 export class UsersController {
@@ -26,8 +27,7 @@ export class UsersController {
   }
 
   @Get()
-  getUsers(): Promise<any[]> {
-    // TODO: Falta crear un interface para el retorno, el objeto de ej. esta en el service
+  getUsers(): Promise<IUser[]> {
     return this.usersService.getUsers();
   }
 
@@ -42,7 +42,7 @@ export class UsersController {
   @Get(':id')
   getUser(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<HttpException | User> {
+  ): Promise<HttpException | IUser> {
     return this.usersService.getUser(id);
   }
 

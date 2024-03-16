@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { IUser } from './user.interface';
 
 @Injectable()
 export class UsersService {
@@ -22,9 +23,7 @@ export class UsersService {
     return this.userRepository.save(newUser);
   }
 
-  async getUsers(): Promise<
-    { id: number; username: string; createdAt: Date }[]
-  > {
+  async getUsers(): Promise<IUser[]> {
     const users = await this.userRepository.find();
     let result = [];
     if (users.length) {
@@ -51,14 +50,20 @@ export class UsersService {
     return { ...user, ...userData };
   }
 
-  async getUser(id: number): Promise<HttpException | User> {
+  async getUser(id: number): Promise<HttpException | IUser> {
     const user = await this.userRepository.findOne({
       where: { id: id },
     });
     if (!user) {
       return new HttpException('User does not exist', HttpStatus.NOT_FOUND);
     }
-    return user;
+    const _user: IUser = {
+      id: user.id,
+      username: user.username,
+      createdAt: user.createdAt,
+    };
+
+    return _user;
   }
 
   async deleteUser(id: number): Promise<HttpException | User> {
