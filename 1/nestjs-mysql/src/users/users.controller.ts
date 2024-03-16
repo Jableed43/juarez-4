@@ -26,7 +26,8 @@ export class UsersController {
   }
 
   @Get()
-  getUsers(): Promise<User[]> {
+  getUsers(): Promise<any[]> {
+    // TODO: Falta crear un interface para el retorno, el objeto de ej. esta en el service
     return this.usersService.getUsers();
   }
 
