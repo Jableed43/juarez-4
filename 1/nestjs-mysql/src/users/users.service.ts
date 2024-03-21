@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user-dto';
 import { UpdateUserDto } from './dto/update-user-dto';
+import { IUser } from './user.interface';
 
 @Injectable()
 export class UsersService {
@@ -18,44 +19,61 @@ export class UsersService {
     if (userFound) {
       return new HttpException('User already exists', HttpStatus.CONFLICT);
     }
-    const newUser = this.userRepository.create(user)
-    return this.userRepository.save(newUser)
+    const newUser = this.userRepository.create(user);
+    return this.userRepository.save(newUser);
   }
 
-  getUsers(): Promise<User[]>{
-    return this.userRepository.find()
+  async getUsers(): Promise<IUser[]> {
+    const users = await this.userRepository.find();
+    let result = [];
+    if (users.length) {
+      result = users.map((d) => ({
+        id: d.id,
+        username: d.username,
+        createdAt: d.createdAt,
+      }));
+    }
+    return result;
   }
 
-  async updateUser(id: number, userData: UpdateUserDto): Promise<HttpException | User>{
+  async updateUser(
+    id: number,
+    userData: UpdateUserDto,
+  ): Promise<HttpException | User> {
     const user = await this.userRepository.findOne({
       where: { id: id },
-    })
+    });
     if (!user) {
       return new HttpException('User already exists', HttpStatus.CONFLICT);
     }
-    this.userRepository.update(id, userData)
-    return {...user,...userData}
+    this.userRepository.update(id, userData);
+    return { ...user, ...userData };
   }
 
-  async getUser(id: number): Promise<HttpException | User>{
+  async getUser(id: number): Promise<HttpException | IUser> {
     const user = await this.userRepository.findOne({
       where: { id: id },
-    })
-    if(!user){
-      return new HttpException('User does not exist', HttpStatus.NOT_FOUND)
+    });
+    if (!user) {
+      return new HttpException('User does not exist', HttpStatus.NOT_FOUND);
     }
-    return user
+    const _user: IUser = {
+      id: user.id,
+      username: user.username,
+      createdAt: user.createdAt,
+    };
+
+    return _user;
   }
 
-  async deleteUser(id: number): Promise<HttpException | User>{
+  async deleteUser(id: number): Promise<HttpException | User> {
     const user = await this.userRepository.findOne({
       where: { id: id },
-    })
-    if(!user){
-      return new HttpException('User does not exist', HttpStatus.NOT_FOUND)
+    });
+    if (!user) {
+      return new HttpException('User does not exist', HttpStatus.NOT_FOUND);
     }
-    this.userRepository.delete({id: id})
-    return user
+    this.userRepository.delete({ id: id });
+    return user;
   }
-
 }
