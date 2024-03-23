@@ -1,6 +1,6 @@
-import { IsNumber, MaxLength, MinLength } from 'class-validator';
+import { IsDateString, IsNumber, MaxLength, MinLength } from 'class-validator';
 
-export class CreateTeacherDto {
+export class CreateStudentDto {
   @MaxLength(13)
   @MinLength(3)
   name: string;
@@ -13,9 +13,8 @@ export class CreateTeacherDto {
   @MinLength(3)
   address: string;
 
-  @MaxLength(45)
-  @MinLength(3)
-  title: string;
+  @IsDateString()
+  birthday: Date;
 
   @IsNumber()
   cityId: number;
