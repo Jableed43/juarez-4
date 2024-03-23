@@ -8,10 +8,7 @@ import { join } from 'path';
 import { TeachersModule } from './teachers/teachers.module';
 import { CitiesModule } from './cities/cities.module';
 import { ClassesModule } from './classes/classes.module';
-import { AddressTeacherModule } from './address-teacher/address-teacher.module';
-import { AddressUserModule } from './address-user/address-user.module';
-import { UserClassModule } from './user-class/user-class.module';
-import { AttendanceModule } from './attendance/attendance.module';
+import { StudentsModule } from './students/students.module';
 
 @Module({
   imports: [
@@ -30,10 +27,7 @@ import { AttendanceModule } from './attendance/attendance.module';
     TeachersModule,
     CitiesModule,
     ClassesModule,
-    AddressTeacherModule,
-    AddressUserModule,
-    UserClassModule,
-    AttendanceModule,
+    StudentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

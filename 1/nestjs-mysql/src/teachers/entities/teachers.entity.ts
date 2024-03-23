@@ -1,13 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Person } from 'src/entitys/person.entity';
+import { Column, Entity } from 'typeorm';
 
-@Entity({name: 'teachers'})
-export class Teacher {
-    @PrimaryGeneratedColumn()
-    idTeacher: number
-
-    @Column({ length: 13 })
-    nombre: string
-
-    @Column({ length: 13 })
-    apellido: string
+@Entity({ name: 'teachers' })
+export class Teacher extends Person {
+  @Column({ length: 45 })
+  title: string;
 }
